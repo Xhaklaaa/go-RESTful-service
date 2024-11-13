@@ -1,7 +1,21 @@
+//Package classification of Product Api
+//
+// Documentation fpr Product Api
+//
+// Schemes: http
+// Host: localhost:9090
+// BasePath: /
+//
+// Consumes:
+// - application/json
+//
+// Produces:
+// - application/json
+// swagger:meta
+
 package handlers
 
 import (
-	"context"
 	"go-RESTful-service/data"
 	"log"
 	"net/http"
@@ -59,22 +73,8 @@ func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-type KeyProduct struct{}
-
-func (p Products) MiddlewareProductionValidation(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		prod := data.Product{}
-
-		err := prod.FromJSON(r.Body)
-		if err != nil {
-			p.l.Println("[ERROR] deserializing product", err)
-			http.Error(rw, "Error reading product", http.StatusBadRequest)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), KeyProduct{}, prod)
-		req := r.WithContext(ctx)
-
-		next.ServeHTTP(rw, req)
-	})
+func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
 }
+
+type KeyProduct struct{}
