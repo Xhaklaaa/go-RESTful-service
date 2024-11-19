@@ -53,12 +53,17 @@ func main() {
 	getR.Handle("/docs", sh)
 	getR.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
-	ch := gohandlers.CORS(gohandlers.AllowOrigins(["https://localhost:3000"]))
+	ch := gohandlers.CORS(
+		gohandlers.AllowedOrigins([]string{"http://127.0.0.1:5173"}), // Укажите ваш клиентский URL
+		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+		gohandlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
+		gohandlers.AllowCredentials(),
+	)
 
 	// create a new server
 	s := http.Server{
 		Addr:         ":9090",           // configure the bind address
-		Handler:      sm,                // set the default handler
+		Handler:      ch(sm),            // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		ReadTimeout:  5 * time.Second,   // max time to read request from the client
 		WriteTimeout: 10 * time.Second,  // max time to write response to the client
